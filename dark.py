@@ -2,27 +2,37 @@
 import subprocess
 
 
-def get_detection_square(darknet_loc, darkarm_loc, label, img_name):
+def get_detection_output(darkarm_loc, label, img_name):
     # Invoke darknet and retrieve the left/right/up/bot
     # coordinates of the detect rectangle.
-    cfg_loc = darknet_loc + "cfg/"
-    weights_loc = darknet_loc + "weights/"
     data_loc = darkarm_loc + "inbox/"
-    dark_cmd = (darknet_loc + "darknet detector test " + label + " " +
-                cfg_loc + "coco.data " + cfg_loc + "yolov3.cfg " +
-                weights_loc + "yolov3.weights " + data_loc + img_name + ".jpg")
+    darknet_loc = darkarm_loc + "darknet/"
+    dark_cmd = ("./darknet " + "detector test " + label + " " +
+                "cfg/coco.data " + "cfg/yolov3.cfg " +
+                "weights/yolov3.weights " + data_loc + img_name + ".jpg")
 
-    process = subprocess.Popen(dark_cmd.split(), stdout=subprocess.PIPE)
-    output, _err = process.communicate()
+    output = subprocess.check_output(dark_cmd.split(), cwd=darknet_loc)
 
-    return output # Need to test the ouput to see what it looks like, then parse.
+    return output
+
+
+def parse_detection_output(output):
+    # Parse output items and put them in a dictionary
+    str_output = output.decode('utf-8')
+    item_list = str_output.split()
+    dic = {}
+    for items in item_list:
+        dic[items.split(":")[0]] = int(items.split(":")[1])
+
+    return dic
 
 
 def compute_center(cord):
     # From the coordinates, get the rectangle center
     rect_center = []
-    rect_center.append(cord['xlft'] + int((cord['xrght'] - cord['xlft'])/2))
-    rect_center.append(cord['ylft'] + int((cord['yrght'] - cord['ylft'])/2))
+    rect_center.append(cord['left'] + int((cord['right'] - cord['left'])/2))
+    rect_center.append(cord['top'] + int((cord['bot'] - cord['top'])/2))
+
     return rect_center
 
 
@@ -31,4 +41,5 @@ def get_translation_vec(img, rect_center):
     height, width, _chan = img.shape
     transl_x = int(width / 2) - rect_center[0]
     transl_y = int(height / 2) - rect_center[1]
+
     return transl_x, transl_y
