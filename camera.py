@@ -68,7 +68,12 @@ class Camera:
             None
         """
 
-        cap = cv2.VideoCapture(self.device)
-        _, frm = cap.read()
+        retake = True
+        while retake:
+            cap = cv2.VideoCapture(self.device)
+            _, frm = cap.read()
+            if frm[3][1][1] != 144: # Realsense sometime takes green-only pic
+                retake = False
+
         cv2.imwrite(os.path.join(self.path, "frame.jpg"), frm)
         cap.release()
