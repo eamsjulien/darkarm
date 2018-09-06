@@ -1,3 +1,4 @@
 darknet
 *.pyc
+capture/
 inbox/
