@@ -1,15 +1,15 @@
 # pylint: disable=missing-docstring
 import subprocess
+import cv2
 
 
-def get_detection_output(darkarm_loc, label, img_name):
+def get_detection_output(darkarm_loc, inbox_loc, label, img_name):
     # Invoke darknet and retrieve the left/right/up/bot
     # coordinates of the detect rectangle.
-    data_loc = darkarm_loc + "inbox/"
     darknet_loc = darkarm_loc + "darknet/"
     dark_cmd = ("./darknet " + "detector test " + label + " " +
                 "cfg/coco.data " + "cfg/yolov3.cfg " +
-                "weights/yolov3.weights " + data_loc + img_name + ".jpg")
+                "weights/yolov3.weights " + inbox_loc + img_name + ".jpg")
 
     output = subprocess.check_output(dark_cmd.split(), cwd=darknet_loc)
 
@@ -36,8 +36,9 @@ def compute_center(cord):
     return rect_center
 
 
-def get_translation_vec(img, rect_center):
+def get_translation_vec(img_path, rect_center):
     # Get the translation vector from center
+    img = cv2.imread(img_path)
     height, width, _chan = img.shape
     transl_x = int(width / 2) - rect_center[0]
     transl_y = int(height / 2) - rect_center[1]
