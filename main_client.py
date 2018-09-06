@@ -9,6 +9,7 @@ Usage: python3 main_client.py --address ADDRESS [--frames FRAMES]
 import argparse
 
 import socks
+import dark
 from camera import Camera
 
 def main(): #pylint: disable=too-many-locals, too-many-statements
@@ -56,7 +57,8 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
 
     print("\n **** RECEIVING VECTOR ****")
 
-    vector = socks.receive_bytes_to_string(client_socket)
+    recv_string = socks.receive_bytes_to_string(client_socket)
+    vector = dark.parse_detection_output(recv_string)
 
     print("\nVector received!")
 

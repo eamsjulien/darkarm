@@ -48,9 +48,12 @@ def main(): # pylint: disable=too-many-statements
     print("Frame  received.")
 
     print("Label detection...")
+    vect = {}
     output = dark.get_detection_output(darkarm_loc, inbox_loc, label, 'frame')
     rect_center = dark.compute_center(dark.parse_detection_output(output))
-    vect = dark.get_translation_vec(inbox_loc + "frame.jpg", rect_center)
+    coord = dark.get_translation_vec(inbox_loc + "frame.jpg", rect_center)
+    vect['xval'] = coord[0]
+    vect['yval'] = coord[1]
 
     print("Sending ack...", end='')
     socks.send_msg(client, 'OK FRAME')
