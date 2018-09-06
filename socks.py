@@ -1,10 +1,11 @@
+# pylint: disable=missing-docstring
 import socket
 import os
 import inspect
 import subprocess
 
 
-def init_environ_folder(capture_loc=None, darkarm_loc=None):
+def init_environ_folder():
     """Return necessary capture_loc based on environ.
 
     Variable capture_loc is used to determine where frames captured
@@ -28,8 +29,9 @@ def init_environ_folder(capture_loc=None, darkarm_loc=None):
         return capture_loc
 
     darkarm_loc = os.environ['DARKARM_FOLDER']
+    inbox_loc = os.environ['DARKARM_INBOX_FOLDER']
 
-    return darkarm_loc
+    return darkarm_loc, inbox_loc
 
 
 def init_client_socket(address, port=5000):
@@ -137,7 +139,7 @@ def send_frame(client_socket, frame_loc):
         filedesc.close()
 
 
-def receive_frame(client_sock, frame, frame_size, save_loc):
+def receive_frame(client_sock, frame_size, save_loc):
     """Receive and save one frame.
 
     Main function responsible for storing and saving exactly one frame from
@@ -156,7 +158,7 @@ def receive_frame(client_sock, frame, frame_size, save_loc):
         None
     """
     img_size = 0
-    filename = save_loc + str(frame) + ".jpg"
+    filename = save_loc + ".jpg"
     with open(filename, 'wb') as img:
         while img_size < frame_size:
             remain = frame_size - img_size
@@ -168,7 +170,7 @@ def receive_frame(client_sock, frame, frame_size, save_loc):
             img_size += len(data)
 
 
-def waiting_for_ack(client_socket, frame, exptype='FRAME'):
+def waiting_for_ack(client_socket, exptype='FRAME'):
     """Wait for a particular frame/message to be acked by server.
 
     Client expects a message of the form 'OK FRAME X' from the server,
@@ -184,15 +186,11 @@ def waiting_for_ack(client_socket, frame, exptype='FRAME'):
     """
 
     msg = client_socket.recv(1024).decode('UTF-8')
-    if exptype == 'FRAME':
-        while msg != 'OK FRAME ' + str(frame):
-            msg = client_socket.recv(1024).decode('UTF-8')
-    else:
-        while msg != 'OK ' + exptype:
-            msg = client_socket.recv(1024).decode('UTF-8')
+    while msg != 'OK ' + exptype:
+        msg = client_socket.recv(1024).decode('UTF-8')
 
 
-def send_frame_ack(client_sock, frame, exptype='FRAME'):
+def send_msg(client_sock, msg):
     """Send ACK for the frame to the client.
 
     Client expects a message of the form 'OK FRAME X' from the server,
@@ -206,7 +204,4 @@ def send_frame_ack(client_sock, frame, exptype='FRAME'):
         None
     """
 
-    if exptype == 'FRAME':
-        client_sock.send(("OK FRAME " + str(frame)).encode('ascii'))
-    else:
-        client_sock.send(("OK " + exptype).encode('ascii'))
+    client_sock.send((str(msg)).encode('ascii'))
