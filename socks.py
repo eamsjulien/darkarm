@@ -158,7 +158,7 @@ def receive_frame(client_sock, frame_size, save_loc):
         None
     """
     img_size = 0
-    filename = save_loc + ".jpg"
+    filename = save_loc + "frame.jpg"
     with open(filename, 'wb') as img:
         while img_size < frame_size:
             remain = frame_size - img_size
