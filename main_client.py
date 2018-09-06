@@ -45,6 +45,7 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
     print("\n **** SENDING FRAME ****")
     frame_loc = capture_loc + "frame.jpg"
     socks.send_frame_size(client_socket, frame_loc)
+    socks.waiting_for_ack(client_socket)
     socks.send_frame(client_socket, frame_loc)
     print("Done.")
     print("Waiting for frame reception...", end='')
@@ -58,8 +59,6 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
     vector = socks.receive_bytes_to_string(client_socket)
 
     print("\nVector received!")
-
-    print("\n **** GENERATING VIDEO ****")
 
     print("Vector is: " + str(vector))
 
