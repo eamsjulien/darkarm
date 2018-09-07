@@ -16,18 +16,19 @@ class Camera:
     Relies on cv2 from frames capture and save.
 
     Attributes:
-        frames = An integer indicating the number of snapshots to take.
+        device = An integer indicating the webcam device to use.
         path = A string indicating the path where frames are saved.
     """
 
     def __init__(self, path='./', device=1):
-        """Init Camera with frames nbr and path."""
+        """Init Camera with device nbr and path."""
 
-        self.path = path
-        self.device = device
+        self._path = path
+        self._device = device
 
 
-    def getpath(self):
+    @property
+    def path(self):
         """Getter for Camera instance path.
 
         Args:
@@ -37,20 +38,49 @@ class Camera:
             A string representing the path where frames are saved.
         """
 
-        return self.path
+        return self._path
 
 
-    def setpath(self, path):
+    @path.setter
+    def path(self, path):
         """Setter for Camera instance path.
 
         Args:
-            path: An string representing the new path.
+            path: A string representing the new path.
 
         Returns:
             None
         """
 
-        self.path = path
+        self._path = path
+
+
+    @property
+    def device(self):
+        """Getter for Camera instance device.
+
+        Args:
+            None
+
+        Returns:
+            An int representing the webcam device.
+        """
+
+        return self._device
+
+
+    @device.setter
+    def device(self, device):
+        """Setter for Camera instance device.
+
+        Args:
+            path: An int representing the new device.
+
+        Returns:
+            None
+        """
+
+        self._device = device
 
 
     def capture(self):
@@ -58,8 +88,7 @@ class Camera:
 
         Starts the existing camera bound to the computer and starts
         taking snapshots, or frames. Relies on the cv2 library call
-        for snapshots. Takes snapshots until self.frames number then
-        saves them under self.path.
+        for snapshots. Takes snapshots and saves them under self.path.
 
         Args:
             None
