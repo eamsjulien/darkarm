@@ -1,4 +1,27 @@
-# pylint: disable=missing-docstring
+"""
+Module supporting various functions responsible for initiating and managing
+socket connections between a client and a server.
+
+function init_environ_folder: Return necessary variables based on env.
+
+function init_client_socket: Initialize client socket.
+
+function init_server_socket: Initialize server socket.
+
+function receive_bytes_to_string: Convert incoming messages from bytes to str.
+
+function send_frame_size: Send frame size to client.
+
+function send_frame: Send frame to client.
+
+function receive_frame: Receive and save one frame.
+
+function waiting_for_ack: Wait for a particular frame/message to be acked by
+server.
+
+function send_msg: Send arbitrary message to the peer.
+"""
+
 import socket
 import os
 import inspect
@@ -6,18 +29,19 @@ import subprocess
 
 
 def init_environ_folder():
-    """Return necessary capture_loc based on environ.
+    """Return necessary capture_loc/inbox,darkarm_loc based on environ.
 
     Variable capture_loc is used to determine where frames captured
-    by the Camera class resides. It relies on an ENV parameter, called
-    AWS_FACEDETECT_FOLDER.
+    by the Camera class resides.
+    Variable inbox_loc indicates where incoming frames are saved and variable
+    darkarm_loc indicates the path of the project folder.
 
     Args:
-        capture_loc: Optional string defining the capture loc.
+        None
 
     Returns:
-        The capture_loc string defining where frames taken by the Camera
-        class reside.
+        Strings representing either capture_loc if the caller is the client.
+        Otherwise, a tuple with darkarm_loc and inbox_loc
     """
 
     stackp = inspect.stack()[1]
@@ -116,16 +140,9 @@ def send_frame_size(client_socket, frame_loc):
 def send_frame(client_socket, frame_loc):
     """Send frame to client.
 
-    Send one frame to the client, but wait for sleep seconds before sending
-    it. Sleep parameter is useful when a lot of frames are sent in a row,
-    in order to avoid broken pipe with the server, when the other end
-    cannot keep up the rythm.
-
     Args:
         client_socket: A socket instance, used for client/server interactions.
         frame_loc: A string representing the frame location.
-        sleep: Optional float representing the number of second to wait
-        before sending.
 
     Returns:
         None
@@ -149,14 +166,14 @@ def receive_frame(client_sock, frame_size, save_loc):
 
     Args:
         client_sock: A socket instance representing a client connection.
-        frame: An int representing the frame number to receive.
         frame_size: An int representing the frame size to expect.
-        img_loc: A string representing the destination where to save the
+        save_loc: A string representing the destination where to save the
         frame
 
     Returns:
         None
     """
+
     img_size = 0
     filename = save_loc + "frame.jpg"
     with open(filename, 'wb') as img:
@@ -173,13 +190,9 @@ def receive_frame(client_sock, frame_size, save_loc):
 def waiting_for_ack(client_socket, exptype='FRAME'):
     """Wait for a particular frame/message to be acked by server.
 
-    Client expects a message of the form 'OK FRAME X' from the server,
-    where X is the frame number waiting to be ack'ed.
-
     Args:
         client_socket: A socket instance, used for client/server interactions.
-        frame: An int representing the current frame number waiting to be
-        ack'ed.
+        exptype: A string representing the type of ack to wait for.
 
     Returns:
         None
@@ -191,14 +204,11 @@ def waiting_for_ack(client_socket, exptype='FRAME'):
 
 
 def send_msg(client_sock, msg):
-    """Send ACK for the frame to the client.
-
-    Client expects a message of the form 'OK FRAME X' from the server,
-    where X is the frame number wainting to be ack'ed.
+    """Send message to the peer.
 
     Args:
         client_sock: A socket instance representing the client connection.
-        frame: An int representing the frame number to ack.
+        msg: An string representing the message to send.
 
     Returns:
         None
