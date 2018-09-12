@@ -24,7 +24,7 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
 
     server_addr = args['address']
 
-    # FACEDETECT CLIENT #
+    # DARKARM CLIENT #
 
     print(" ------------------")
     print("| DARKARM - CLIENT |")
@@ -63,6 +63,12 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
     print("\nVector received!")
 
     print("Vector is: " + str(vector))
+
+    ######## ADD THE PID / ARM MOVING PART HERE #########
+
+    ### USE PIXEL VECTOR vector(x_pixel, y_pixel)
+
+    #####################################################
 
     print("\n ------------------------")
     print("| DARKARM CLIENT - GOODBYE |")
