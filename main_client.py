@@ -17,7 +17,7 @@ def main(): #pylint: disable=too-many-locals, too-many-statements
 
     # PYTHON PARSER VIA ARGPARSE #
 
-    parser = argparse.ArgumentParser(description="AWS FaceDetect Client Main.")
+    parser = argparse.ArgumentParser(description="DarkArm Client Main.")
     parser.add_argument("-a", "--address", required=True,
                         help="Address to connect to.", type=str)
     args = vars(parser.parse_args())

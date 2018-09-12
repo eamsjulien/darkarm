@@ -14,7 +14,7 @@ def main(): # pylint: disable=too-many-statements
 
     # PYTHON PARSER VIA ARGPARSE #
 
-    parser = argparse.ArgumentParser(description="DarkArm Client Main.")
+    parser = argparse.ArgumentParser(description="DarkArm Server Main.")
     parser.add_argument("-l", "--label", help="Label string.",
                         nargs='?', default='person', type=str)
     args = vars(parser.parse_args())
