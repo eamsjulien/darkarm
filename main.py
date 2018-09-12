@@ -21,7 +21,7 @@ def main(): # pylint: disable=too-many-statements
 
     label = args['label']
 
-    # EOP_Sockets SERVER #
+    # DARKARM SERVER #
 
     print(" ------------------")
     print("| DARKARM - SERVER |")
