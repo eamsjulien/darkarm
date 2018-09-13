@@ -53,7 +53,7 @@ def parse_detection_output(output):
         A dict representing rectangle coordinates.
     """
 
-    str_output = output.decode('utf-8')
+    str_output = output
     item_list = str_output.split()
     dic = {}
     for items in item_list:
