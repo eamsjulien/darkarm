@@ -99,10 +99,15 @@ class Camera:
 
         retake = True
         while retake:
-            cap = cv2.VideoCapture(self.device)
-            _, frm = cap.read()
-            if frm[3][1][1] != 144: # Realsense sometime takes green-only pic
-                retake = False
+            try: # Realsense always complains about gstreamer at first invoke
+                cap = cv2.VideoCapture(self.device)
+                _, frm = cap.read()
+                _, frm = cap.read() # First frame usually contains garbage
+                if frm[3][1][1] != 144: # Realsense sometime takes green-only pic
+                    retake = False
+            except TypeError:
+                print("Error capturing frame. Retrying...")
+                pass
 
         cv2.imwrite(os.path.join(self.path, "frame.jpg"), frm)
         cap.release()
