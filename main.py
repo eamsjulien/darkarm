@@ -5,7 +5,7 @@ Usage: python3 main.py [--sleep SLEEP]
 """
 
 import argparse
-import os
+# import os   uncomment this if you want to debug incoming images
 
 import socks
 import dark
@@ -56,9 +56,7 @@ def main(): # pylint: disable=too-many-statements
             output = output.decode('utf-8')
             sep = r'\d'
             rest = output.split(sep, 1)[0]
-            print(rest)
             rect_center = dark.compute_center(dark.parse_detection_output(rest))
-            print(rect_center)
             coord = dark.get_translation_vec(inbox_loc + "frame.jpg", rect_center)
             vect['xval'] = coord[0]
             vect['yval'] = coord[1]
@@ -72,6 +70,7 @@ def main(): # pylint: disable=too-many-statements
         print("\nFrame processing completed!")
 
         print("\n **** SENDING VECTOR ****")
+        print("Vector value: " + str(vect))
         socks.waiting_for_ack(client, "VECT")
         socks.send_msg(client, vect)
 
@@ -80,7 +79,7 @@ def main(): # pylint: disable=too-many-statements
         print("Closing sockets...", end='')
         client.close()
         print("Done!")
-        # os.remove('server/inbox/frame.jpg')
+        # os.remove('server/inbox/frame.jpg') uncomment this for debugging
 
     print("\n ------------------------")
     print("| DARKARM SERVER - GOODBYE |")
