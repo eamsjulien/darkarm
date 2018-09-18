@@ -5,7 +5,7 @@ Usage: python3 main.py [--sleep SLEEP]
 """
 
 import argparse
-# import os   uncomment this if you want to debug incoming images
+import os
 
 import socks
 import dark
@@ -18,9 +18,12 @@ def main(): # pylint: disable=too-many-statements
     parser = argparse.ArgumentParser(description="DarkArm Server Main.")
     parser.add_argument("-l", "--label", help="Label string.",
                         nargs='?', default='person', type=str)
+    parser.add_argument("-d", "--debug", help="Debug mode.",
+                        nargs='?', default='False', type=str)
     args = vars(parser.parse_args())
 
     label = args['label']
+    debug = bool(args['debug'])
 
     # DARKARM SERVER #
 
@@ -54,8 +57,7 @@ def main(): # pylint: disable=too-many-statements
         try:
             output = dark.get_detection_output(darkarm_loc, inbox_loc, label, 'frame')
             output = output.decode('utf-8')
-            sep = r'\d'
-            rest = output.split(sep, 1)[0]
+            rest = output.split(r'\d', 1)[0]
             rect_center = dark.compute_center(dark.parse_detection_output(rest))
             coord = dark.get_translation_vec(inbox_loc + "frame.jpg", rect_center)
             vect['xval'] = coord[0]
@@ -79,7 +81,8 @@ def main(): # pylint: disable=too-many-statements
         print("Closing sockets...", end='')
         client.close()
         print("Done!")
-        # os.remove('server/inbox/frame.jpg') uncomment this for debugging
+        if not debug:
+            os.remove('server/inbox/frame.jpg')
 
     print("\n ------------------------")
     print("| DARKARM SERVER - GOODBYE |")
