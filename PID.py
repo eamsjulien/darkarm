@@ -62,7 +62,8 @@ class PID: # pylint: disable=too-many-instance-attributes
         self.output = 0.0
 
     def clear(self):
-        """Clears PID computations and coefficients"""
+        """Clears PID computations and coefficients
+        """
         self.SetPoint = 0.0
 
         self.PTerm = 0.0
@@ -111,17 +112,20 @@ class PID: # pylint: disable=too-many-instance-attributes
 
     def setKp(self, proportional_gain):
         """Determines how aggressively the PID reacts to the current error with
-        setting Proportional Gain"""
+        setting Proportional Gain
+        """
         self.Kp = proportional_gain
 
     def setKi(self, integral_gain):
         """Determines how aggressively the PID reacts to the current error with
-        setting Integral Gain"""
+        setting Integral Gain
+        """
         self.Ki = integral_gain
 
     def setKd(self, derivative_gain):
         """Determines how aggressively the PID reacts to the current error with
-        setting Derivative Gain"""
+        setting Derivative Gain
+        """
         self.Kd = derivative_gain
 
     def setWindup(self, windup):
