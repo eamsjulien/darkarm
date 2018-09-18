@@ -107,7 +107,6 @@ class Camera:
                     retake = False
             except TypeError:
                 print("Error capturing frame. Retrying...")
-                pass
 
         cv2.imwrite(os.path.join(self.path, "frame.jpg"), frm)
         cap.release()
