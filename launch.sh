@@ -24,6 +24,11 @@ do
       shift
       shift
       ;;
+    -d|--debug)
+      DEBUG="$2"
+      shift
+      shift
+      ;;
     *)
       POSITIONAL+=("$1")
       shift
@@ -46,7 +51,7 @@ if [[ "${MODE}" = "server" ]]; then
   if [[ ! -d "$INBOX_DIR" ]]; then
     mkdir -p "$INBOX_DIR"
   fi
-  python3 main.py -l $LABEL
+  python3 main.py -l $LABEL -d $DEBUG
 else
   CLIENT=1
 fi
